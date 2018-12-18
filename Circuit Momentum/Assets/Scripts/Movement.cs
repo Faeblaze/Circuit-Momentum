@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
 	void Update ()
     {
         SetRotationPoint();
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        
 	}
 
     private void SetRotationPoint()
@@ -46,7 +46,11 @@ public class Movement : MonoBehaviour
 }
     private void FixedUpdate()
     {
+        float speed = _rigidbody.velocity.magnitude / 1000;
+
         float accelerationInput = acceleration * (Input.GetMouseButton(0) ? 1 : Input.GetMouseButton(1) ? -1 : 0) * Time.fixedDeltaTime;
         _rigidbody.AddRelativeForce(Vector3.forward * accelerationInput);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSpeed * Mathf.Clamp(speed, -1, 1) * Time.fixedDeltaTime);
     }
 }
