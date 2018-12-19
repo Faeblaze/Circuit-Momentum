@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour
+{
 
     public Transform[] points;
     private int destPoint = 0;
@@ -29,8 +28,11 @@ public class Enemy : MonoBehaviour {
         if (points.Length == 0)
             return;
 
+        Vector3 point = points[destPoint].position;
+        point.y = transform.position.y;
+
         // Set the agent to go to the currently selected destination.
-        agent.destination = points[destPoint].position;
+        agent.destination = point;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.

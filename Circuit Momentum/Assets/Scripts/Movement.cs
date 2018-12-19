@@ -1,34 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float acceleration = 8;
-    [SerializeField] float turnSpeed = 5;
+    public float speedBoostSpeed;
 
-    Quaternion targetRotation;
-    Rigidbody _rigidbody;
+    public float acceleration = 8;
+    public float turnSpeed = 5;
 
+    private Quaternion targetRotation;
+    private new Rigidbody rigidbody;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
+    // Update is called once per frame
+    private void Update()
     {
         SetRotationPoint();
-        
-	}
+
+    }
 
     private void SetRotationPoint()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        if(Physics.Raycast(ray, out hitInfo))
+        if (Physics.Raycast(ray, out hitInfo))
         {
             Vector3 target = hitInfo.point;
 
@@ -43,14 +42,22 @@ public class Movement : MonoBehaviour
             //float rotationAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             //targetRotation = Quaternion.Euler(0, rotationAngle, 0);
         }
-}
+    }
     private void FixedUpdate()
     {
-        float speed = _rigidbody.velocity.magnitude / 1000;
+        float speed = rigidbody.velocity.magnitude / 1000;
 
         float accelerationInput = acceleration * (Input.GetMouseButton(0) ? 1 : Input.GetMouseButton(1) ? -1 : 0) * Time.fixedDeltaTime;
-        _rigidbody.AddRelativeForce(Vector3.forward * accelerationInput);
+        rigidbody.AddRelativeForce(Vector3.forward * accelerationInput);
 
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSpeed * Mathf.Clamp(speed, -1, 1) * Time.fixedDeltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("SpeedBoost"))
+        {
+            rigidbody.AddForce(other.transform.right * speedBoostSpeed);
+        }
     }
 }
