@@ -23,7 +23,7 @@ public class Checkpoint : MonoBehaviour
             {
                 controller.currentLap++;
 
-                GameManager.Instance.AddTime();
+                GameManager.Instance.OnPlayerLap();
             }
 
             controller.currentId = id;
